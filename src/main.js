@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { auth } from './firebase'
 import './plugins/vuetify'
+import './plugins/base'
 import { sync } from 'vuex-router-sync'
 import App from './App.vue'
 import router from './router'
