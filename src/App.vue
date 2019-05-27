@@ -1,5 +1,6 @@
 <template lang="pug">
   v-app(dark)
+    core-snackbar
     v-content
       router-view
 
@@ -7,7 +8,10 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    CoreSnackbar: () => import('@/components/core/Snackbar')
+  }
 }
 
 </script>
