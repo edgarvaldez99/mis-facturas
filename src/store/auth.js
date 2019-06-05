@@ -1,4 +1,4 @@
-import { auth } from '@/firebase'
+import firebase, { auth } from '@/firebase'
 import router from '@/router'
 
 const initialState = localStorage.session ? JSON.parse(localStorage.getItem('session')) : {
@@ -29,7 +29,11 @@ export default {
         .signOut()
         .then(_ => router.push('/'))
         .catch(_ => router.push('/')),
-    updateSessionInLocalStorage: ({ state }) => updateSessionInLocalStorage(state)
+    updateSessionInLocalStorage: ({ state }) => updateSessionInLocalStorage(state),
+    loginWithGoogle: ({ dispatch }) => {
+      const provider = new firebase.auth.GoogleAuthProvider()
+      auth.signInWithPopup(provider).then(result => dispatch('updateAllState', result.user))
+    }
   },
   getters: {
     isAuthenticated: state => state.isAuthenticated

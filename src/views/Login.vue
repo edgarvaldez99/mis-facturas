@@ -9,6 +9,7 @@ v-layout(align-center justify-center)
           v-text-field(v-model='form.email', :rules='validators.email', label='Correo electrónico', required, :disabled="sending")
           v-text-field(v-model='form.password', type="password", :counter='6', :rules='validators.password', label='Contraseña', required, :disabled="sending")
           v-btn(:disabled='!valid', color='success', @click='validate') Iniciar sesión
+          v-btn(color='#d34836', @click='loginWithGoogle') Iniciar con Google
 
 </template>
 
@@ -36,7 +37,7 @@ export default {
     }
   }),
   methods: {
-    ...mapActions([ 'userLogin' ]),
+    ...mapActions([ 'userLogin', 'loginWithGoogle' ]),
     validate () {
       this.error = ''
       if (this.$refs.form.validate()) {
