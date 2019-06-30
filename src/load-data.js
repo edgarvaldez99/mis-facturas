@@ -1,5 +1,19 @@
 import { database } from '@/firebase'
 
+// const replaceUserIdBy = (data, userId) => {
+//   let data1 = {}
+//   Object.keys(data).forEach(id => {
+//     data1 = {
+//       ...data1,
+//       [id]: {
+//         ...data[id],
+//         userId
+//       }
+//     }
+//   })
+//   return data1
+// }
+
 const getDataInSnapshot = snapshot => {
   const data = snapshot.val()
   return data ? Object.keys(data).map(id => ({ ...data[id], id })) : []
