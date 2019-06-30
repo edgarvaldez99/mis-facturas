@@ -74,6 +74,13 @@ const initialForm = {
   monto: 0
 }
 
+const initialCalculated = {
+  valorIVAincluido: 0,
+  tipoIVA: '10%',
+  iva10: 0,
+  iva5: 0
+}
+
 export default {
   components: {
     ContribuyenteForm: _ => import('@/components/forms/ContribuyenteForm')
@@ -119,12 +126,7 @@ export default {
         timbradoSearch: '',
         timbradoSelected: ''
       },
-      calculated: {
-        valorIVAincluido: 0,
-        tipoIVA: '10%',
-        iva10: 0,
-        iva5: 0
-      }
+      calculated: { ...initialCalculated }
     }
   },
   computed: {
@@ -236,7 +238,17 @@ export default {
             if (saveAndClose) return this.$emit('finished')
             if (other) {
               this.form = this.getInitialForm()
+            } else {
+              this.form = {
+                ...this.form,
+                gravada10: 0,
+                gravada5: 0
+              }
+              let numeroFactura = this.form.numeroFactura
+              setTimeout(_ => (this.form.numeroFactura = ''))
+              setTimeout(_ => (this.form.numeroFactura = numeroFactura))
             }
+            this.calculated = { ...initialCalculated }
           })
           .catch(err => {
             this.sending = false
@@ -272,7 +284,7 @@ export default {
       }
     },
     loadMontoTotal () {
-      this.form.monto = this.form.gravada10 + this.form.gravada5 + this.calculated.iva10 + this.calculated.iva5
+      this.form.monto = parseInt(this.form.gravada10) + parseInt(this.form.gravada5) + this.calculated.iva10 + this.calculated.iva5
     },
     validateNumeroTimbrado () {
       const errors = []
