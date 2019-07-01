@@ -30,14 +30,14 @@ v-form(ref='form', v-model='valid', lazy-validation, style='width: 100%;')
         v-radio(v-for='(condicion, idx) in condiciones' :key='`condicion${idx}`' :label='condicion' :value='condicion')
       v-switch(v-model='form.exenta', label='Excenta')
       v-divider.pt-2
-      v-text-field(v-model='calculated.valorIVAincluido', label='Valor con IVA incluido', v-if='!form.exenta', type='number', :disabled='sending')
+      v-currency-field(v-model='calculated.valorIVAincluido', label='Valor con IVA incluido', v-bind='currency_config', v-if='!form.exenta', type='number', :disabled='sending')
       v-btn.mb-2(v-if='!form.exenta' v-for='(iva, idx) in tiposIVA' :key='`tipoIVA${idx}`' @click='convertGravada(iva)') Convertir a gravada {{iva}}
       v-divider.pt-2
-      v-text-field(v-model='form.gravada10', :rules='validators.gravada10', label='Gravadas 10%', type='number', v-if='!form.exenta', required, :disabled='sending')
-      v-text-field(v-model='form.gravada5', :rules='validators.gravada5', label='Gravadas 5%', type='number', v-if='!form.exenta', required, :disabled='sending')
-      v-text-field(v-model='calculated.iva10', label='IVA 10%', type='number', v-if='!form.exenta', readonly, :disabled='sending')
-      v-text-field(v-model='calculated.iva5', label='IVA 5%', type='number', v-if='!form.exenta', readonly, :disabled='sending')
-      v-text-field(v-model='form.monto', label='Monto', type='number', :readonly='!form.exenta', :disabled='sending')
+      v-currency-field(v-model='form.gravada10', :rules='validators.gravada10', label='Gravadas 10%', v-bind='currency_config', type='number', v-if='!form.exenta', required, :disabled='sending')
+      v-currency-field(v-model='form.gravada5', :rules='validators.gravada5', label='Gravadas 5%', v-bind='currency_config', type='number', v-if='!form.exenta', required, :disabled='sending')
+      v-currency-field(v-model='calculated.iva10', label='IVA 10%', type='number', v-bind='currency_config', v-if='!form.exenta', readonly, :disabled='sending')
+      v-currency-field(v-model='calculated.iva5', label='IVA 5%', type='number', v-bind='currency_config', v-if='!form.exenta', readonly, :disabled='sending')
+      v-currency-field(v-model='form.monto', label='Monto', v-bind='currency_config', type='number', :readonly='!form.exenta', :disabled='sending')
     v-card-actions
       div
         div
@@ -99,6 +99,15 @@ export default {
       alertMsg: '',
       alertType: 'success',
       form: this.getInitialForm(),
+      currency_config: {
+        decimal: ',',
+        thousands: '.',
+        precision: 0,
+        masked: false,
+        allowBlank: false,
+        min: Number.MIN_SAFE_INTEGER,
+        max: Number.MAX_SAFE_INTEGER
+      },
       validators: {
         contribuyenteId: [
           v => !!v || 'Este valor es requerido'
