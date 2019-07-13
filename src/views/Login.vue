@@ -10,7 +10,7 @@ v-layout(align-center justify-center)
           v-text-field(v-model='form.password', type="password", :counter='6', :rules='validators.password', label='Contraseña', required, :disabled="sending")
           v-text-field(v-if='signUp', v-model='form.confirmPassword', type="password", :counter='6', :rules='validators.confirmPassword', :error-messages='errorMessages.confirmPassword', label='Confirmar contraseña', required, :disabled="sending")
           v-btn(:disabled='!valid', color='success', @click='validate') {{ signUp ? 'Crear cuenta' : 'Iniciar sesión' }}
-          v-btn(color='#d34836', @click='loginWithGoogle') Iniciar con Google
+          v-btn(color='#d34836', @click='validateWithGoogle') Iniciar con Google
           div
             v-btn(v-if='!signUp' @click='signUp = true') Registrarse
             v-btn(v-if='signUp' @click='signUp = false') Ingresar
@@ -83,6 +83,17 @@ export default {
             })
         }
       }
+    },
+    validateWithGoogle () {
+      this.loginWithGoogle()
+        .then(user => {
+          this.sending = false
+          this.$router.push({ name: 'forms' })
+        })
+        .catch(err => {
+          this.sending = false
+          this.error = err.message
+        })
     }
   }
 }
