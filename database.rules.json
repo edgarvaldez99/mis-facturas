@@ -4,15 +4,15 @@
     ".write": false,
     "contribuyentes": {
       "$contribuyente_id": {
-        ".read": "(auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid) || auth.token.admin == true",
-        ".write": "(auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid) || auth.token.admin == true",
+        ".read": "auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
+        ".write": "auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
         ".indexOn": ["userId"]
       }
     },
     "facturas": {
       "$factura_id": {
-        ".read": "(auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid) || auth.token.admin == true",
-        ".write": "(auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid) || auth.token.admin == true",
+        ".read": "auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
+        ".write": "auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
         ".indexOn": ["userId", "fecha"]
       }
     }
