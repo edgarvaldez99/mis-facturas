@@ -87,8 +87,10 @@ export default {
     validateWithGoogle () {
       this.loginWithGoogle()
         .then(user => {
-          this.sending = false
-          this.$router.push({ name: 'forms' })
+          if (user) {
+            this.sending = false
+            this.$router.push({ name: 'forms' })
+          }
         })
         .catch(err => {
           this.sending = false
