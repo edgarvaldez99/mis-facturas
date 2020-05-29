@@ -1,20 +1,6 @@
 {
   "rules": {
-    ".read": true,
-    ".write": false,
-    "contribuyentes": {
-      "$contribuyente_id": {
-        ".read": "auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
-        ".write": "auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
-        ".indexOn": ["userId"]
-      }
-    },
-    "facturas": {
-      "$factura_id": {
-        ".read": "auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
-        ".write": "auth.uid != null && query.orderByChild == 'userId' && query.equalTo == auth.uid",
-        ".indexOn": ["userId", "fecha"]
-      }
-    }
+    ".read": "auth.uid != null",
+    ".write": "auth.uid != null"
   }
 }
