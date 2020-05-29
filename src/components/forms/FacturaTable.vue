@@ -65,6 +65,7 @@ v-layout(row wrap)
           td.text-xs-center {{ localify(props.item.gravada5) }}
           td.text-xs-center {{ localify(+props.item.gravada10/10) }}
           td.text-xs-center {{ localify(+props.item.gravada5/21) }}
+          td.text-xs-center {{ props.item.exenta ? 'Si' : 'No' }}
           td.text-xs-center
             img(:src="props.item.mediasrc" widh="56" height="56", @click="showImage(props.item.mediasrc)", style="cursor: pointer")
           td.justify-center.layout.px-0
@@ -138,6 +139,7 @@ export default {
       { text: 'Gravada 5%', align: 'center', value: 'gravada5' },
       { text: 'IVA 10%', align: 'center', value: 'gravada10' },
       { text: 'IVA 5%', align: 'center', value: 'gravada5' },
+      { text: 'Es exenta', align: 'center', value: 'exenta' },
       { text: 'Foto de la Factura', align: 'center', value: 'mediasrc' },
       { text: 'Acciones', align: 'center', value: 'title', sortable: false }
     ],
