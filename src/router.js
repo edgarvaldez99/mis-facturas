@@ -10,16 +10,12 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      redirect: { name: 'forms' }
-    },
-    {
       path: '/login',
       name: 'login',
       component: Login
     },
     {
-      path: '/form',
+      path: '/',
       name: 'forms',
       component: Forms,
       meta: {
