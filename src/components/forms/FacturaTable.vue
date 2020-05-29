@@ -1,6 +1,22 @@
 <template lang="pug">
 v-layout(row wrap)
   v-flex(xs12)
+    v-tooltip(right)
+      template(v-slot:activator="{ on }")
+        v-btn(
+          v-on="on",
+          v-html="datepickerType === 'month' ? 'Días' : 'Meses'",
+          @click='changeDatepickerType()'
+        )
+      span Cambiar tipo de calendario
+
+  v-flex(xs6, v-show="datepickerType === ''")
+    v-date-picker(v-model="filters.startDay")
+
+  v-flex(xs6, v-show="datepickerType === ''")
+    v-date-picker(v-model="filters.endDay")
+  
+  v-flex(xs12, v-show="datepickerType === 'month'")
     v-date-picker(
       v-model="filters.months"
       type="month"
@@ -97,7 +113,7 @@ v-layout(row wrap)
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { isBefore, isSameMonth, format, parse } from 'date-fns'
+import { isBefore, isSameMonth, isWithinRange, format, parse } from 'date-fns'
 
 const maxMonth = format(new Date(), 'YYYY-MM')
 
@@ -133,10 +149,13 @@ export default {
       gravada5: 0
     },
     filters: {
+      startDay: '',
+      endDay: '',
       months: [],
       maxMonth,
       minMonth: maxMonth
-    }
+    },
+    datepickerType: 'month'
   }),
 
   computed: {
@@ -147,15 +166,19 @@ export default {
       self.totals.gravada5 = 0
       return this.facturas
         .filter(f => {
-          const date1 = parse(f.fecha)
-          const date2 = parse(self.filters.minMonth)
-          if (isBefore(date1, date2)) self.filters.minMonth = format(date1, 'YYYY-MM')
-          const len = self.filters.months.length
-          if (!len) return true
-          for (let i = 0; i < len; i++) {
-            if (isSameMonth(self.filters.months[i], f.fecha)) return true
+          if (self.datepickerType === 'month') {
+            const date1 = parse(f.fecha)
+            const date2 = parse(self.filters.minMonth)
+            if (isBefore(date1, date2)) self.filters.minMonth = format(date1, 'YYYY-MM')
+            const len = self.filters.months.length
+            if (!len) return true
+            for (let i = 0; i < len; i++) {
+              if (isSameMonth(self.filters.months[i], f.fecha)) return true
+            }
+            return false
+          } else {
+            return isWithinRange(f.fecha, self.filters.startDay, self.filters.endDay)
           }
-          return false
         })
         .map(f => {
           if (!f.exenta) {
@@ -214,7 +237,12 @@ export default {
 
     localify (val) {
       return val.toString().toLocaleString('es')
-    }
+    },
+
+    changeDatepickerType() {
+      this.datepickerType = this.datepickerType === 'month' ? '' : 'month';
+    },
+
   }
 }
 
