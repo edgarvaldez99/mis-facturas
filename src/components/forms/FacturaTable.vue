@@ -1,105 +1,116 @@
 <template lang="pug">
-v-layout(row wrap)
-  v-flex(xs12)
-    v-tooltip(right)
-      template(v-slot:activator="{ on }")
-        v-btn(
-          v-on="on",
-          v-html="datepickerType === 'month' ? 'Días' : 'Meses'",
-          @click='changeDatepickerType()'
-        )
-      span Cambiar tipo de calendario
+div.factura-table-container
+  v-expansion-panel
+    v-expansion-panel-content
+      template(v-slot:header)
+        div Selectores de Rangos de Fechas
+      .selectores-fecha-expansion-panel-content
+        v-tooltip(right)
+          template(v-slot:activator="{ on }")
+            v-btn(
+              v-on="on",
+              v-html="datepickerType === 'month' ? 'Días' : 'Meses'",
+              @click='changeDatepickerType()'
+            )
+          span Cambiar tipo de calendario
 
-  v-flex(xs6, v-show="datepickerType === ''")
-    v-date-picker(v-model="filters.startDay")
+        .selectores-fecha-container
+          v-layout(row wrap)
+            v-flex(xs6, v-show="datepickerType === ''")
+              v-date-picker(v-model="filters.startDay")
 
-  v-flex(xs6, v-show="datepickerType === ''")
-    v-date-picker(v-model="filters.endDay")
+            v-flex(xs6, v-show="datepickerType === ''")
+              v-date-picker(v-model="filters.endDay")
 
-  v-flex(xs12, v-show="datepickerType === 'month'")
-    v-date-picker(
-      v-model="filters.months"
-      type="month"
-      :max="filters.maxMonth"
-      :min="filters.minMonth"
-      full-width
-      landscape
-      multiple
-    )
+            v-flex(xs12, v-show="datepickerType === 'month'")
+              v-date-picker(
+                v-model="filters.months"
+                type="month"
+                :max="filters.maxMonth"
+                :min="filters.minMonth"
+                full-width
+                landscape
+                multiple
+              )
 
-  v-flex(xs12)
-    v-card.ma-3
-      v-card-title
-        .title Lista de Facturas
-        v-spacer
-        v-text-field(
-          v-model='search'
-          append-icon='search'
-          label='Search'
-          single-line
-          hide-details
-          style="float: right; margin-right: 20px;"
-        )
+    v-expansion-panel-content
+      template(v-slot:header)
+        div Tabla de Facturas
+      .tabla-facturas-expansion-panel-content
+        v-layout(row wrap)
+          v-flex(xs12)
+            v-card.ma-3
+              v-card-title
+                .title Lista de Facturas
+                v-spacer
+                v-text-field(
+                  v-model='search'
+                  append-icon='search'
+                  label='Search'
+                  single-line
+                  hide-details
+                  style="float: right; margin-right: 20px;"
+                )
 
-      v-data-table.elevation-1(:headers='headers', :items='facturaItems', :search='search')
-        template(v-slot:items='props')
-          td.justify-center.layout.px-0
-            v-tooltip(right)
-              template(v-slot:activator="{ on }")
-                v-btn(color="warning", icon, v-on="on", @click='editItem(props.item)')
-                  v-icon edit
-              span Editar
-            v-tooltip(left)
-              template(v-slot:activator="{ on }")
-                btn-with-dialog-alert(title='Eliminar factura', icon, v-on='on', @on-confirm='deleteItem(props.item)')
-                  v-icon delete
-              span Eliminar
-          td.text-xs-center {{ props.item.contribuyente.razonSocial }}
-          td.text-xs-center {{ props.item.contribuyente.nombreFantasia }}
-          td.text-xs-center.pl-0.pr-0 {{ getRUCby(props.item.contribuyente) }}
-          td.text-xs-center {{ props.item.numeroTimbrado }}
-          td.text-xs-center {{ props.item.numeroFactura }}
-          td.text-xs-centerpl-0.pr-0 {{ props.item.fecha }}
-          td.text-xs-center {{ props.item.condicion }}
-          td.text-xs-center {{ localify(props.item.gravada10) }}
-          td.text-xs-center {{ localify(props.item.gravada5) }}
-          td.text-xs-center {{ localify(+props.item.gravada10/10) }}
-          td.text-xs-center {{ localify(+props.item.gravada5/21) }}
-          td.text-xs-center {{ props.item.exenta ? 'Si' : 'No' }}
-          td.text-xs-center
-            img(:src="props.item.mediasrc" widh="56" height="56", @click="showImage(props.item.mediasrc)", style="cursor: pointer")
-          td.justify-center.layout.px-0
-            v-tooltip(right)
-              template(v-slot:activator="{ on }")
-                v-btn(color="warning", icon, v-on="on", @click='editItem(props.item)')
-                  v-icon edit
-              span Editar
-            v-tooltip(left)
-              template(v-slot:activator="{ on }")
-                btn-with-dialog-alert(title='Eliminar factura', icon, v-on='on', @on-confirm='deleteItem(props.item)')
-                  v-icon delete
-              span Eliminar
-        template(v-slot:no-data)
-          v-alert(:value="true" color="error" icon="warning") No hay facturas disponibles
+              .v-card-content.tabla-facturas
+                v-data-table.elevation-1(:headers='headers', :items='facturaItems', :search='search')
+                  template(v-slot:items='props')
+                    td.justify-center.layout.px-0
+                      v-tooltip(right)
+                        template(v-slot:activator="{ on }")
+                          v-btn(color="warning", icon, v-on="on", @click='editItem(props.item)')
+                            v-icon edit
+                        span Editar
+                      v-tooltip(left)
+                        template(v-slot:activator="{ on }")
+                          btn-with-dialog-alert(title='Eliminar factura', icon, v-on='on', @on-confirm='deleteItem(props.item)')
+                            v-icon delete
+                        span Eliminar
+                    td.text-xs-center {{ props.item.contribuyente.razonSocial }}
+                    td.text-xs-center {{ props.item.contribuyente.nombreFantasia }}
+                    td.text-xs-center.pl-0.pr-0 {{ getRUCby(props.item.contribuyente) }}
+                    td.text-xs-center {{ props.item.numeroTimbrado }}
+                    td.text-xs-center {{ props.item.numeroFactura }}
+                    td.text-xs-centerpl-0.pr-0 {{ props.item.fecha }}
+                    td.text-xs-center {{ props.item.condicion }}
+                    td.text-xs-center {{ localify(props.item.gravada10) }}
+                    td.text-xs-center {{ localify(props.item.gravada5) }}
+                    td.text-xs-center {{ localify(+props.item.gravada10/10) }}
+                    td.text-xs-center {{ localify(+props.item.gravada5/21) }}
+                    td.text-xs-center {{ props.item.exenta ? 'Si' : 'No' }}
+                    td.text-xs-center
+                      img(:src="props.item.mediasrc" widh="56" height="56", @click="showImage(props.item.mediasrc)", style="cursor: pointer")
+                    td.justify-center.layout.px-0
+                      v-tooltip(right)
+                        template(v-slot:activator="{ on }")
+                          v-btn(color="warning", icon, v-on="on", @click='editItem(props.item)')
+                            v-icon edit
+                        span Editar
+                      v-tooltip(left)
+                        template(v-slot:activator="{ on }")
+                          btn-with-dialog-alert(title='Eliminar factura', icon, v-on='on', @on-confirm='deleteItem(props.item)')
+                            v-icon delete
+                        span Eliminar
+                  template(v-slot:no-data)
+                    v-alert(:value="true" color="error" icon="warning") No hay facturas disponibles
 
-      v-layout(row wrap)
-        v-flex(xs8 sm3)
-          .text-xs-left.text-sm-center.subheading.pt-3 Total Gravada 10%
-        v-flex(xs4 sm3)
-          .text-xs-left.pt-3 {{ localify(totals.gravada10) }}
-        v-flex(xs8 sm3)
-          .text-xs-left.text-sm-center.subheading.pt-3 Total Gravada 5%
-        v-flex(xs4 sm3)
-          .text-xs-left.pt-3 {{ localify(totals.gravada5) }}
-
-      v-card-actions
-        v-spacer
+  v-layout(row wrap)
+    v-flex(xs8 sm3 lg2)
+      .text-xs-left.text-sm-center.subheading.pt-4.pb-2 Total Gravada 10%
+    v-flex(xs4 sm3 lg2)
+      .text-xs-left.pt-4.pb-2 {{ localify(totals.gravada10) }}
+    v-flex(xs8 sm3 lg2)
+      .text-xs-left.text-sm-center.subheading.pt-4.pb-2 Total Gravada 5%
+    v-flex(xs4 sm3 lg2)
+      .text-xs-left.pt-4.pb-2 {{ localify(totals.gravada5) }}
+    v-flex(xs12 md lg4)
+      .right.pt-lg-4
         v-tooltip(left)
           template(v-slot:activator="{ on }")
             v-btn(color='success', icon, v-on="on", @click="createItem()")
               v-icon add
           span Agregar nueva factura
-
+  
   v-dialog(v-model='dialog', persistent, max-width='1000px', scrollable)
     FacturaForm(v-if="dialog" :form-id="editFormId" @finished="dialog = false")
 
@@ -249,3 +260,27 @@ export default {
 }
 
 </script>
+
+<style scoped lang="stylus">
+.factura-table-container
+  padding: 10px 2rem
+
+.selectores-fecha-container,
+.v-card-content.tabla-facturas
+  overflow: auto
+  padding 1rem
+
+.selectores-fecha-container
+  height: calc(100vh - 434px)
+.v-card-content.tabla-facturas
+  height: calc(100vh - 498px)
+
+.right
+  display: flex
+  justify-content: right 
+
+@media (min-width: 1264px) and (max-width: 1904px)
+  .pt-lg-4
+    padding-top: 24px
+
+</style>

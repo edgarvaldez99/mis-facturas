@@ -14,27 +14,28 @@ v-layout
           style="float: right; margin-right: 20px;"
         )
 
-      v-data-table.elevation-1(:headers='headers', :items='contribuyentes', :search='search')
-        template(v-slot:items='props')
-          td.text-xs-left {{ props.item.razonSocial }}
-          td.text-xs-center {{ props.item.ruc }}
-          td.text-xs-center {{ props.item.digitoVerificador }}
-          td.text-xs-left {{ props.item.nombreFantasia }}
-          td.justify-center.layout.px-0
-            v-tooltip(right)
-              template(v-slot:activator="{ on }")
-                v-btn(color="warning", icon, v-on="on", @click='editItem(props.item)')
-                  v-icon edit
-              span Editar
-            v-tooltip(left)
-              template(v-slot:activator="{ on }")
-                btn-with-dialog-alert(title='Eliminar contribuyente', icon, v-on='on', @on-confirm='deleteItem(props.item)')
-                  v-icon delete
-              span Eliminar
-        template(v-slot:no-results)
-          v-alert(:value='true' color='error' icon='warning') La busqueda "{{ search }}" no tuvo resultados.
-        template(v-slot:no-data)
-          v-alert(:value="true" color="error" icon="warning") No hay contribuyentes disponibles
+      .v-card-content
+        v-data-table.elevation-1(:headers='headers', :items='contribuyentes', :search='search')
+          template(v-slot:items='props')
+            td.text-xs-left {{ props.item.razonSocial }}
+            td.text-xs-center {{ props.item.ruc }}
+            td.text-xs-center {{ props.item.digitoVerificador }}
+            td.text-xs-left {{ props.item.nombreFantasia }}
+            td.justify-center.layout.px-0
+              v-tooltip(right)
+                template(v-slot:activator="{ on }")
+                  v-btn(color="warning", icon, v-on="on", @click='editItem(props.item)')
+                    v-icon edit
+                span Editar
+              v-tooltip(left)
+                template(v-slot:activator="{ on }")
+                  btn-with-dialog-alert(title='Eliminar contribuyente', icon, v-on='on', @on-confirm='deleteItem(props.item)')
+                    v-icon delete
+                span Eliminar
+          template(v-slot:no-results)
+            v-alert(:value='true' color='error' icon='warning') La busqueda "{{ search }}" no tuvo resultados.
+          template(v-slot:no-data)
+            v-alert(:value="true" color="error" icon="warning") No hay contribuyentes disponibles
 
       v-card-actions
         v-spacer
@@ -93,3 +94,10 @@ export default {
 }
 
 </script>
+
+<style scoped lang="stylus">
+.v-card-content
+  height: calc(100vh - 334px)
+  overflow: auto
+
+</style>
