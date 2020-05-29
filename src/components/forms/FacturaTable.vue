@@ -110,7 +110,7 @@ div.factura-table-container
             v-btn(color='success', icon, v-on="on", @click="createItem()")
               v-icon add
           span Agregar nueva factura
-  
+
   v-dialog(v-model='dialog', persistent, max-width='1000px', scrollable)
     FacturaForm(v-if="dialog" :form-id="editFormId" @finished="dialog = false")
 
@@ -277,7 +277,7 @@ export default {
 
 .right
   display: flex
-  justify-content: right 
+  justify-content: right
 
 @media (min-width: 1264px) and (max-width: 1904px)
   .pt-lg-4
