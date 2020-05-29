@@ -1,19 +1,76 @@
 <template lang="pug">
-v-layout(align-center justify-center)
+v-layout(
+  align-center
+  justify-center
+)
   v-flex(xs12 sm8 md4)
-    v-progress-linear(:indeterminate="true" :active="sending")
-    v-alert(:value="!!error" type="error") {{error}}
+    v-progress-linear(
+      :indeterminate="true"
+      :active="sending"
+    )
+    v-alert(
+      :value="!!error"
+      type="error"
+    ) {{error}}
     v-card
       v-card-text
-        v-form(ref='form', v-model='valid', lazy-validation)
-          v-text-field(v-model='form.email', :rules='validators.email', label='Correo electrónico', required, :disabled="sending")
-          v-text-field(v-model='form.password', type="password", :counter='6', :rules='validators.password', label='Contraseña', required, :disabled="sending")
-          v-text-field(v-if='signUp', v-model='form.confirmPassword', type="password", :counter='6', :rules='validators.confirmPassword', :error-messages='errorMessages.confirmPassword', label='Confirmar contraseña', required, :disabled="sending")
-          v-btn(:disabled='!valid', color='success', @click='validate') {{ signUp ? 'Crear cuenta' : 'Iniciar sesión' }}
-          v-btn(color='#d34836', @click='validateWithGoogle') Iniciar con Google
+        v-form(
+          ref='form',
+          v-model='valid',
+          lazy-validation,
+          @submit='validate($event)'
+        )
+          v-text-field(
+            v-model='form.email',
+            :rules='validators.email',
+            label='Correo electrónico',
+            required,
+            :disabled='sending'
+          )
+          v-text-field(
+            v-model='form.password',
+            type="password",
+            :counter='6',
+            :rules='validators.password',
+            label='Contraseña',
+            required,
+            :disabled='sending'
+          )
+          v-text-field(
+            v-if='signUp',
+            v-model='form.confirmPassword',
+            type="password",
+            :counter='6',
+            :rules='validators.confirmPassword',
+            :error-messages='errorMessages.confirmPassword',
+            label='Confirmar contraseña',
+            required,
+            :disabled='sending'
+          )
+          v-btn(
+            type='submit'
+            color='success',
+            :disabled='!valid || sending'
+          ) {{ signUp ? 'Crear cuenta' : 'Iniciar sesión' }}
+          v-btn(
+            type='button'
+            color='#d34836',
+            :disabled='!valid || sending',
+            @click='validateWithGoogle'
+          ) Iniciar con Google
           div
-            v-btn(v-if='!signUp' @click='signUp = true') Registrarse
-            v-btn(v-if='signUp' @click='signUp = false') Ingresar
+            v-btn(
+              v-if='!signUp'
+              type='button'
+              :disabled='sending'
+              @click='signUp = true'
+            ) Registrarse
+            v-btn(
+              v-if='signUp'
+              type='button'
+              :disabled='sending'
+              @click='signUp = false'
+            ) Ingresar
 
 </template>
 
@@ -57,7 +114,8 @@ export default {
   },
   methods: {
     ...mapActions([ 'createUser', 'userLogin', 'loginWithGoogle' ]),
-    validate () {
+    validate (event) {
+      if (event) event.preventDefault()
       this.error = ''
       if (this.$refs.form.validate()) {
         this.sending = true
