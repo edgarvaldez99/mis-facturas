@@ -4,6 +4,7 @@
   },
   "hosting": {
     "public": "dist",
+    "site": "contabilidad-fe6a7",
     "ignore": [
       "firebase.json",
       "**/.*",
