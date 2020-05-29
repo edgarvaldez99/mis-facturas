@@ -15,7 +15,7 @@ v-layout(row wrap)
 
   v-flex(xs6, v-show="datepickerType === ''")
     v-date-picker(v-model="filters.endDay")
-  
+
   v-flex(xs12, v-show="datepickerType === 'month'")
     v-date-picker(
       v-model="filters.months"
@@ -239,9 +239,9 @@ export default {
       return val.toString().toLocaleString('es')
     },
 
-    changeDatepickerType() {
-      this.datepickerType = this.datepickerType === 'month' ? '' : 'month';
-    },
+    changeDatepickerType () {
+      this.datepickerType = this.datepickerType === 'month' ? '' : 'month'
+    }
 
   }
 }
