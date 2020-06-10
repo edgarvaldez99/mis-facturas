@@ -1,5 +1,12 @@
 <template lang="pug">
 div.factura-table-container
+  v-tooltip(right)
+    template(v-slot:activator="{ on }")
+      v-btn(
+        v-on="on",
+        @click='downloadJson()'
+      ) Descargar JSON
+    span Descargar JSON de facturas
   v-expansion-panel
     v-expansion-panel-content
       template(v-slot:header)
@@ -126,6 +133,7 @@ div.factura-table-container
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { isBefore, isSameMonth, isWithinRange, format, parse } from 'date-fns'
+import { downloadObjectAsJson } from '../../utils/download-file'
 
 const maxMonth = format(new Date(), 'YYYY-MM')
 
@@ -241,7 +249,6 @@ export default {
 
     getTimbradoSelected (item) {
       this.timbradoSelected = item
-      console.log({ item })
     },
 
     getRUCby (contribuyente) {
@@ -254,6 +261,32 @@ export default {
 
     changeDatepickerType () {
       this.datepickerType = this.datepickerType === 'month' ? '' : 'month'
+    },
+
+    downloadJson () {
+      const listToDownload = this.facturaItems.map(item => {
+        const egresoMontoTotal = item.gravada10 + item.gravada5
+        return {
+          'periodo': '2019',
+          'tipo': '1', // Tipo FACTURA === '1'
+          'relacionadoTipoIdentificacion': 'RUC',
+          'fecha': item.fecha,
+          'id': 1,
+          'ruc': '4010971',
+          'egresoMontoTotal': egresoMontoTotal,
+          'relacionadoNombres': item.contribuyente.razonSocial ? item.contribuyente.razonSocial.toUpperCase() : '',
+          'relacionadoNumeroIdentificacion': item.contribuyente.ruc,
+          'timbradoCondicion': item.condicion ? item.condicion.toLowerCase() : '',
+          'timbradoDocumento': item.numeroFactura,
+          'timbradoNumero': item.numeroTimbrado,
+          'tipoEgreso': 'gasto',
+          'tipoEgresoTexto': 'Gasto',
+          'tipoTexto': 'Factura',
+          'subtipoEgreso': 'GPERS',
+          'subtipoEgresoTexto': 'Gastos personales y de familiares a cargo realizados en el país'
+        }
+      })
+      downloadObjectAsJson(listToDownload, 'egresos')
     }
 
   }
