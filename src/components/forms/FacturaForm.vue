@@ -169,8 +169,15 @@ export default {
     },
     'form.numeroFactura' (val) {
       const errors = []
-      if (this.formId) this.facturas.find(c => c.id !== this.formId && c.numeroFactura === val) && errors.push('Este número de factura ya existe')
-      else this.facturas.find(c => c.numeroFactura === val) && errors.push('Este número de factura ya existe')
+      const contribuyenteId = this.form.contribuyenteId
+      if (this.formId) {
+        this.facturas.find(
+          c => c.id !== this.formId && c.numeroFactura === val && c.contribuyenteId === contribuyenteId
+        ) && errors.push('Este número de factura ya existe')
+      } else {
+        this.facturas.find(c => c.numeroFactura === val && c.contribuyenteId === contribuyenteId) &&
+            errors.push('Este número de factura ya existe')
+      }
       this.errorMessages.numeroFactura = errors
     },
     'form.fecha' () {
@@ -217,16 +224,16 @@ export default {
       })
       return numeroTimbrado
     },
-    getLastNumeroFactura (contribuyente) {
-      let numeroFactura
+    getLastFactura (contribuyente) {
+      let factura
       let dateCompare = parse('1970-01-01')
       this.facturas.forEach((f, idx, list) => {
         if (f.contribuyenteId === contribuyente.id && isAfter(f.fecha, dateCompare)) {
           dateCompare = parse(f.fecha)
-          numeroFactura = f.numeroFactura
+          factura = f
         }
       })
-      return numeroFactura
+      return factura
     },
     getContribuyenteAndCloseDialog (data) {
       if (data) this.loadDataFromContribuyente(data)
@@ -276,9 +283,14 @@ export default {
       }
     },
     loadDataFromContribuyente (contribuyente) {
+      const lastFactura = this.getLastFactura(contribuyente)
       this.form.contribuyenteId = contribuyente.id
       if (!this.form.numeroTimbrado) this.form.numeroTimbrado = this.getLastNumeroTimbrado(contribuyente)
-      if (!this.form.numeroFactura) this.form.numeroFactura = this.getLastNumeroFactura(contribuyente)
+      if (!this.form.numeroFactura) this.form.numeroFactura = lastFactura.numeroFactura
+      if (!this.form.condicion) this.form.condicion = lastFactura.condicion
+      if (!this.form.exenta) this.form.exenta = lastFactura.exenta
+      if (!this.form.gravada10) this.form.gravada10 = lastFactura.gravada10
+      if (!this.form.gravada5) this.form.gravada5 = lastFactura.gravada5
       this.$refs.numeroFacturaField.focus()
     },
     convertGravada (tipoIVA) {
