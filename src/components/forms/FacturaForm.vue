@@ -289,8 +289,9 @@ export default {
       if (!this.form.numeroFactura) this.form.numeroFactura = lastFactura.numeroFactura
       if (!this.form.condicion) this.form.condicion = lastFactura.condicion
       if (!this.form.exenta) this.form.exenta = lastFactura.exenta
-      if (!this.form.gravada10) this.form.gravada10 = lastFactura.gravada10
-      if (!this.form.gravada5) this.form.gravada5 = lastFactura.gravada5
+      if (!this.form.fecha) this.form.fecha = lastFactura.fecha
+      // if (!this.form.gravada10) this.form.gravada10 = lastFactura.gravada10
+      // if (!this.form.gravada5) this.form.gravada5 = lastFactura.gravada5
       this.$refs.numeroFacturaField.focus()
     },
     convertGravada (tipoIVA) {
