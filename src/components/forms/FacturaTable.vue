@@ -270,7 +270,7 @@ export default {
         const egresoMontoTotal = item.gravada10 + item.gravada5 + (item.exenta ? item.monto : 0)
         totalEgreso += egresoMontoTotal
         return {
-          'periodo': currentYear - 1,
+          'periodo': (currentYear - 1).toString(),
           'tipo': '1', // Tipo FACTURA === '1'
           'relacionadoTipoIdentificacion': 'RUC',
           'fecha': item.fecha,
