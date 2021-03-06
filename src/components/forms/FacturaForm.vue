@@ -58,7 +58,7 @@ v-form(ref='form', v-model='valid', lazy-validation, style='width: 100%;')
 import { mapActions, mapGetters } from 'vuex'
 import { format, isBefore, isAfter, parse } from 'date-fns'
 
-const condiciones = ['Contado', 'Crédito']
+const condiciones = ['Contado', 'Credito']
 
 const tiposIVA = ['10%', '5%']
 
