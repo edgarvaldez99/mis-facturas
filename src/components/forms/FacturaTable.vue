@@ -264,9 +264,11 @@ export default {
     },
 
     downloadJson () {
+      let totalEgreso = 0
       const currentYear = (new Date()).getFullYear()
-      const listToDownload = this.facturaItems.map((item, idx) => {
+      const egresos = this.facturaItems.map((item, idx) => {
         const egresoMontoTotal = item.gravada10 + item.gravada5 + (item.exenta ? item.monto : 0)
+        totalEgreso += egresoMontoTotal
         return {
           'periodo': currentYear - 1,
           'tipo': '1', // Tipo FACTURA === '1'
@@ -287,7 +289,7 @@ export default {
           'subtipoEgresoTexto': 'Gastos personales y de familiares a cargo realizados en el país'
         }
       })
-      downloadObjectAsJson(listToDownload, 'egresos')
+      downloadObjectAsJson({ totalEgreso, egresos }, 'egresos')
     }
 
   }
