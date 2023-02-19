@@ -7,6 +7,13 @@ div.factura-table-container
         @click='downloadJson()'
       ) Descargar JSON
     span Descargar JSON de facturas
+  v-tooltip(right)
+    template(v-slot:activator="{ on }")
+      v-btn(
+        v-on="on",
+        @click='downloadJsonV2()'
+      ) Descargar JSON v2
+    span Descargar JSON para Registro de Comprobantes de Compra
   v-expansion-panel
     v-expansion-panel-content
       template(v-slot:header)
@@ -290,6 +297,54 @@ export default {
         }
       })
       downloadObjectAsJson({ totalEgreso, egresos }, 'egresos')
+    },
+
+    downloadJsonV2 () {
+      let totalEgreso = 0
+      const compras = this.facturaItems.map((item, idx) => {
+        const date = parse(item.fecha)
+        const fecha = format(date, 'DD-MM-YYYY')
+        const gravada10 = item.gravada10
+        const gravada5 = item.gravada5
+        const iva10 = gravada10 / 10
+        const iva5 = gravada5 / 20
+        const gravada10ConIVA = gravada10 + iva10
+        const gravada5ConIVA = gravada5 + iva5
+        const exenta = item.exenta ? item.monto : 0
+        const totalComprobante = gravada10ConIVA + gravada5ConIVA + exenta
+        const nombre = item.contribuyente.razonSocial ? item.contribuyente.razonSocial.toUpperCase() : ''
+        const condicion = item.condicion === 'Contado' ? 1 : item.condicion === 'Credito' ? 2 : ''
+        const round = (num) => (Math.round((num + Number.EPSILON) * 100) / 100).toLocaleString()
+        totalEgreso += totalComprobante
+        return {
+          'CÓDIGO TIPO DE REGISTRO': 2,
+          'CÓDIGO TIPO DE IDENTIFICACIÓN DEL PROVEEDOR/ VENDEDOR': 11,
+          'NÚMERO DE IDENTIFICACIÓN DEL PROVEEDOR/VENDEDOR': item.contribuyente.ruc,
+          'NOMBRE O RAZÓN SOCIAL DEL PROVEEDOR/ VENDEDOR': nombre,
+          'CÓDIGO TIPO DE COMPROBANTE': 109,
+          'FECHA DE EMISIÓN DEL COMPROBANTE': fecha,
+          'NÚMERO DE TIMBRADO': item.numeroTimbrado,
+          'NÚMERO DEL COMPROBANTE': item.numeroFactura,
+          'MONTO GRAVADO AL 10%  (IVA INCLUIDO)': round(gravada10ConIVA),
+          'MONTO GRAVADO AL 5%  (IVA INCLUIDO)': round(gravada5ConIVA),
+          'MONTO NO GRAVADO O EXENTO': exenta,
+          'MONTO TOTAL DEL COMPROBANTE': round(totalComprobante),
+          'CONDICIÓN DE COMPRA': condicion,
+          'OPERACIÓN EN MONEDA EXTRANJERA': 'N',
+          'IMPUTA AL IVA': item.exenta ? 'N' : 'S',
+          'IMPUTA AL IRE': 'N',
+          'IMPUTA AL  IRP-RSP': 'S',
+          'NO IMPUTA': 'N',
+          'NÚMERO DEL COMPROBANTE DE VENTA ASOCIADO': '',
+          'TIMBRADO DEL COMPROBANTE DE VENTA ASOCIADO': '',
+          'FECHA': item.fecha,
+          'MONTO GRAVADO AL 10%  (SIN IVA)': round(gravada10),
+          'MONTO GRAVADO AL 5%  (SIN IVA)': round(gravada5),
+          'MONTO IVA AL 10%': round(iva10),
+          'MONTO IVA AL 5%': round(iva5)
+        }
+      })
+      downloadObjectAsJson({ totalEgreso, compras }, 'compras')
     }
 
   }
